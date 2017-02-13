@@ -87,14 +87,23 @@ E = simplify(T+U);
 CoG_tot = (m1*CoGB+m2*CoGTR+m3*CoGSR+m2*CoGTL+m3*CoGSL)/(m1+m2+m3+m2+m3);
 CoG_tot = simplify(CoG_tot);
 
-%% Theta and dTheta (spring angle with respect to vertical line)
+%% Theta and dTheta (angle between vertical line and spring)
 % The spring here is placed between CoG and foot.
+% GF stands for CoG-Foot
 % Right Foot: 
-thetaR = atan2((FootR(1)-CoG_tot(1)),(CoG_tot(2)-FootR(2)));
-dthetaR = jacobian(thetaR,q)*vq;
+thetaR_GF = atan2((FootR(1)-CoG_tot(1)),(CoG_tot(2)-FootR(2)));
+dthetaR_GF = jacobian(thetaR_GF,q)*vq;
 % Left Foot: 
-thetaL = atan2((FootL(1)-CoG_tot(1)),(CoG_tot(2)-FootL(2)));
-dthetaL = jacobian(thetaL,q)*vq;
+thetaL_GF = atan2((FootL(1)-CoG_tot(1)),(CoG_tot(2)-FootL(2)));
+dthetaL_GF = jacobian(thetaL_GF,q)*vq;
+%% Theta and dTheta (angle between vertical line and thigh)
+% HK stands for Hip-Knee
+% Right Foot: 
+thetaR_HK = atan2((KneeR(1)-Hip(1)),(Hip(2)-KneeR(2)));
+dthetaR_HK = jacobian(thetaR_HK,q)*vq;
+% Left Foot: 
+thetaL_HK = atan2((KneeL(1)-Hip(1)),(Hip(2)-KneeL(2)));
+dthetaL_HK = jacobian(thetaL_HK,q)*vq;
 
 %% L and dL (Virtual spring length and its changing speed)
 % Right Foot: 
@@ -127,12 +136,17 @@ matlabFunction(CoGSL,'file','Functions\CoGShankL','vars',{q,param});
 matlabFunction(FootL,'file','Functions\posFootL','vars',{q,param});
 matlabFunction(E,'file','Functions\energy','vars',{[q;vq],param});
 matlabFunction(CoG_tot,'file','Functions\CoG_tot','vars',{q,param});
-matlabFunction(thetaR,'file','Functions\ThetaR','vars',{q,param});
-matlabFunction(dthetaR,'file','Functions\dThetaR','vars',{[q;vq],param});
+matlabFunction(thetaR_GF,'file','Functions\ThetaR','vars',{q,param});
+matlabFunction(dthetaR_GF,'file','Functions\dThetaR','vars',{[q;vq],param});
 matlabFunction(LengthR,'file','Functions\SpringLengthR','vars',{q,param});
 matlabFunction(dLengthR,'file','Functions\dSpringLengthR','vars',{[q;vq],param});
-matlabFunction(thetaL,'file','Functions\ThetaL','vars',{q,param});
-matlabFunction(dthetaL,'file','Functions\dThetaL','vars',{[q;vq],param});
+matlabFunction(thetaL_GF,'file','Functions\ThetaL','vars',{q,param});
+matlabFunction(dthetaL_GF,'file','Functions\dThetaL','vars',{[q;vq],param});
 matlabFunction(LengthL,'file','Functions\SpringLengthL','vars',{q,param});
 matlabFunction(dLengthL,'file','Functions\dSpringLengthL','vars',{[q;vq],param});
+
+matlabFunction(thetaR_HK,'file','Functions\ThetaR_HK','vars',{q,param});
+matlabFunction(dthetaR_HK,'file','Functions\dThetaR_HK','vars',{[q;vq],param});
+matlabFunction(thetaL_HK,'file','Functions\ThetaL_HK','vars',{q,param});
+matlabFunction(dthetaL_HK,'file','Functions\dThetaL_HK','vars',{[q;vq],param});
 

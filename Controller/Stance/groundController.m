@@ -43,16 +43,28 @@ if phase == 2 || phase == 5
     derr =  x(3+n/2);     
     tau_balance = -1*(kp*err + kd*derr);
 elseif phase == 3 || phase == 6
-    % I found the robot lean forward too much with tar_vel = 0.
-    tar_vel = 1.2*dx_des + 0.3;
-                % can change dx_des to x(6), so there is no delay.
-                % if dx_des = 1, then tar_vel should be 1.5
-                % if dx_des = 0, then tar_vel should be 0.3
-    % Failed try:
-    % tar_vel = -((x(8)+x(9))*param.J2+(x(8)+x(9)+x(10))*param.J3)/param.J1;
+    % The robot lean forward too much with tar_vel = 0.
+    % can change dx_des to x(8), so there is no delay.
+    
+    % 1. When rear foot during flight points to the ground:
+    %tar_vel = 2*dx_des + 0.3;
+        % if dx_des = 0.5, then tar_vel should be 1.3
+        % if dx_des = 0, then tar_vel should be 0.3
+    % 2. When the knee of rear foot during flight points to the ground:
+    %tar_vel = 0*dx_des + 0;
+        % if dx_des = 0.5, then tar_vel should be 0
+        % if dx_des = 0, then tar_vel should be 0
+    % 3. When the knee of rear foot during flight points to pi/9:
+    tar_vel = 2*x(8) + (-1);
+        % if dx_des = 0.5, then tar_vel should be 0
+        % if dx_des = 0, then tar_vel should be -1
+    % 4. When the knee of rear foot during flight points to pi/9~pi/6:
+    %tar_vel = 0*x(8) + (0);
+        % if dx_des = 0.5, then tar_vel should be 0
+        % if dx_des = 0, then tar_vel should be 0
     
     % P controller parameters
-    kp = 10;%*50;       % 2
+    kp = 10;  %*50;   % 2
     % kd = 0.2;   % 0.2
     max_f = 1000;    % maximum torque that can be applied
     % P controller for desired angular velocity.
@@ -121,7 +133,7 @@ end
 % theta_tar = 0; % for debugging
 
 %% Swing Foot: Hip joint (Use "theta and desired theta" instead of alpha and desired alpha)
-% Derive current theta (spring is between CoG and foot!)
+% Derive current theta (angle between virtical line and "CoG-Foot"!)
 if phase == 2 || phase == 3 
     theta = ThetaL(x(1:n/2),sysParam);
     d_theta = dThetaL(x,sysParam);
@@ -130,8 +142,8 @@ elseif phase == 5 || phase == 6
     d_theta = dThetaR(x,sysParam);
 end
 % PD controller parameters
-kp = 120;    % 120 % 300
-kd = 4.8;    % 4.8 % 8
+kp = 10;   %50;  % 120 % 300
+kd = 0.3;  %1.5; % 4.8 % 8
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired phi.
 err = theta - theta_tar;
@@ -153,15 +165,21 @@ end
 
 %% Swing Foot: Knee joint
 % PD controller parameters
-kp = 100;    
-kd = 0.9;   
+kp = 100;    % 100
+kd = 0.9;   % 0.9
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired phi.
-if phase == 2 || phase == 3
-    err = x(7) - param.beta_eq*5;
+if phase == 2 
+    err = x(7) - param.beta_eq*4;
     derr =  x(7+n/2);   
-elseif phase == 5 || phase == 6
-    err = x(5) - param.beta_eq*5;
+elseif phase == 3
+    err = x(7) - param.beta_eq*4;
+    derr =  x(7+n/2);   
+elseif phase == 5
+    err = x(5) - param.beta_eq*4;
+    derr =  x(5+n/2);   
+elseif phase == 6
+    err = x(5) - param.beta_eq*4;
     derr =  x(5+n/2);      
 end
 tau_knee = -kp*err - kd*derr;
@@ -177,6 +195,15 @@ if phase == 2 || phase == 3
 elseif phase == 5 || phase == 6
     tau(5) = tau_knee;
 end
+
+%% Another way: (No torque at hip joint of swing leg during compression)
+% Assignment
+if phase == 2  
+    tau(6) = 0;
+elseif phase == 5
+    tau(4) = 0;
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 %% Limit

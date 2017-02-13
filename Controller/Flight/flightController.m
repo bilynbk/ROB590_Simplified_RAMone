@@ -4,7 +4,7 @@ tau = zeros(n/2,1);
 
 %% parameters
 param = yumingParameters();
-sysParam = simParameters();
+sysParam = param.sysParam;
 
 %% Get the desired touch-down angle
 % Position controller parameters
@@ -47,8 +47,8 @@ elseif phase == 4
     d_theta = dThetaL(x,sysParam);
 end
 % PD controller parameters
-kp = 120;    % 120 % 300
-kd = 4.8;    % 4.8 % 8
+kp = 50;   %10;   %50;    % 120 % 300
+kd = 3.5;  %0.7;  %3.5;    % 4.8 % 8
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired phi.
 err = theta - theta_tar;
@@ -70,8 +70,8 @@ end
 
 %% Front Foot: Knee joint
 % PD controller parameters
-kp = 100;    
-kd = 0.9;   
+kp = 50;   % 100  
+kd = 0.4;  % 0.9
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired phi.
 if phase == 1
@@ -96,20 +96,40 @@ elseif phase == 4
 end
 
 %% Rear Foot: Hip joint
-% Derive current theta (spring is between CoG and foot!)
+%%%%%%%% Way I: foot pointing to the ground %%%%%%%%%%%%%
+% Derive current theta (angle between virtical line and "CoG-foot"!)
+% if phase == 1 
+%     theta = ThetaL(x(1:n/2),sysParam);
+%     d_theta = dThetaL(x,sysParam);
+% elseif phase == 4
+%     theta = ThetaR(x(1:n/2),sysParam);
+%     d_theta = dThetaR(x,sysParam);
+% end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% Way II: knee pointing to the ground %%%%%%%%%%%%
+% Derive current theta (angle between virtical line and "Hip-Knee"!)
 if phase == 1 
-    theta = ThetaL(x(1:n/2),sysParam);
-    d_theta = dThetaL(x,sysParam);
+    theta = ThetaL_HK(x(1:n/2),sysParam);
+    d_theta = dThetaL_HK(x,sysParam);
 elseif phase == 4
-    theta = ThetaR(x(1:n/2),sysParam);
-    d_theta = dThetaR(x,sysParam);
+    theta = ThetaR_HK(x(1:n/2),sysParam);
+    d_theta = dThetaR_HK(x,sysParam);
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PD controller parameters
-kp = 120;    % 120 % 300
-kd = 4.8;    % 4.8 % 8
+kp = 10;   %50; % 120 % 300
+kd = 0.7;  %3.5; % 4.8 % 8
 max_f = 1000;    % maximum torque that can be applied
-% PD controller for desired phi.
-err = theta - 0;
+% PD controller for desired theta.
+% 1.
+theta_tar = pi/9;
+    % pi/9 all the time
+% 2. 
+%theta_tar = -1/18*pi*2*dx_des + pi/6;
+    % pi/9 if dx_des = 0.5 
+    % pi/6 if dx_des = 0
+
+err = theta - theta_tar;
 derr =  d_theta;     
         %%% TODO: theta_target is dynamic, so I should change derr.
 tau_hip = -kp*err - kd*derr;
@@ -128,10 +148,9 @@ end
 
 
 %% Rear Foot: Knee joint
-
 % PD controller parameters
-kp = 100;    
-kd = 0.9;   
+kp = 50;    
+kd = 0.4;   
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired phi.
 if phase == 1
@@ -164,5 +183,9 @@ if param.torque_limit_flag
         end
     end
 end
+
+%% testing
+% tau(6) = 0;
+% tau(7) = 0;
 
 end

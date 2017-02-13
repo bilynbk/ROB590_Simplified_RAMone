@@ -47,7 +47,7 @@ param.torque_limit_flag = 1;
 
 
 %% Virtual Component (a spring between hip and foot)
-param.k = 4000;%5000;            % spring constant   
+param.k = 5000;%5000;            % spring constant   
 param.d = 10;             % spring damping 
 param.beta_eq = -20*pi/180;
                           % knee relax angle

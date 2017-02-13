@@ -1,5 +1,7 @@
 function qplus = impactVelUpdate(x,phase)
-    sysParam = simParameters();
+    param = yumingParameters();
+    sysParam = param.sysParam;
+    
     n = size(x,1);
     M = MassMatrix(x(1:n/2),sysParam);
     if phase == 2
