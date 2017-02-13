@@ -123,7 +123,7 @@ kd = 0.7;  %3.5; % 4.8 % 8
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired theta.
 % 1.
-theta_tar = pi/9;
+theta_tar = pi/9;       % TODO: This could be the angle at previous liftoff
     % pi/9 all the time
 % 2. 
 % theta_tar = -1/18*pi*2*dx_des + pi/6;
@@ -132,7 +132,7 @@ theta_tar = pi/9;
 
 err = theta - theta_tar;
 derr =  d_theta;     
-        %%% TODO: theta_target is dynamic, so I should change derr.
+        %%% TODO: If theta_target is dynamic, I should modify derr.
 tau_hip = -kp*err - kd*derr;
 if tau_hip > max_f
     tau_hip = max_f;

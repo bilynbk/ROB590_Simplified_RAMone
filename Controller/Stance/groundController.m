@@ -65,12 +65,10 @@ elseif phase == 3 || phase == 6
     
     % P controller parameters
     kp = 10;  %*50;   % 2
-    % kd = 0.2;   % 0.2
     max_f = 1000;    % maximum torque that can be applied
     % P controller for desired angular velocity.
     err = x(3+n/2) - tar_vel;
-    % derr =  x(5)-x(6);
-    tau_balance = -kp*err;% - kd*derr;
+    tau_balance = -kp*err;
 end
 if tau_balance > max_f
     tau_balance = max_f;
