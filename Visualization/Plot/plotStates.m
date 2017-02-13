@@ -48,7 +48,7 @@ if plot_flag(14)
 end
 if plot_flag(11+4)
     plot(T,P(:,11+4),'Color',[0.5 0 0],'DisplayName','L (m)')
-    plot([T(1) T(end)],[Yparam.L_sp0 Yparam.L_sp0],'k--','DisplayName','L_{eq,R} (m)')
+    plot([T(1) T(end)],[param.L_sp0 param.L_sp0],'k--','DisplayName','L_{eq,R} (m)')
 end
 if plot_flag(12+4)
     plot(T,P(:,12+4),'--','Color',[0.5 0 0],'DisplayName','LDot_R (m/s)')

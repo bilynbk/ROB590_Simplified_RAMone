@@ -1,4 +1,5 @@
 function tau = flightController(x,t_prev_stance,phase)
+% Front foot is tuned
 n = size(x,1);
 tau = zeros(n/2,1);
 
@@ -71,7 +72,7 @@ end
 %% Front Foot: Knee joint
 % PD controller parameters
 kp = 50;   % 100  
-kd = 0.4;  % 0.9
+kd = 0.65;  % 0.9
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired phi.
 if phase == 1
@@ -125,7 +126,7 @@ max_f = 1000;    % maximum torque that can be applied
 theta_tar = pi/9;
     % pi/9 all the time
 % 2. 
-%theta_tar = -1/18*pi*2*dx_des + pi/6;
+% theta_tar = -1/18*pi*2*dx_des + pi/6;
     % pi/9 if dx_des = 0.5 
     % pi/6 if dx_des = 0
 
@@ -150,7 +151,7 @@ end
 %% Rear Foot: Knee joint
 % PD controller parameters
 kp = 50;    
-kd = 0.4;   
+kd = 0.65;   
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired phi.
 if phase == 1
@@ -185,6 +186,7 @@ if param.torque_limit_flag
 end
 
 %% testing
+% tau(4) = 0;
 % tau(6) = 0;
 % tau(7) = 0;
 

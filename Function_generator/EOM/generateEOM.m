@@ -91,27 +91,33 @@ CoG_tot = simplify(CoG_tot);
 % The spring here is placed between CoG and foot.
 % GF stands for CoG-Foot
 % Right Foot: 
-thetaR_GF = atan2((FootR(1)-CoG_tot(1)),(CoG_tot(2)-FootR(2)));
-dthetaR_GF = jacobian(thetaR_GF,q)*vq;
+thetaR_GF = simplify(atan2((FootR(1)-CoG_tot(1)),(CoG_tot(2)-FootR(2))));
+dthetaR_GF = simplify(jacobian(thetaR_GF,q)*vq);
 % Left Foot: 
-thetaL_GF = atan2((FootL(1)-CoG_tot(1)),(CoG_tot(2)-FootL(2)));
-dthetaL_GF = jacobian(thetaL_GF,q)*vq;
+thetaL_GF = simplify(atan2((FootL(1)-CoG_tot(1)),(CoG_tot(2)-FootL(2))));
+dthetaL_GF = simplify(jacobian(thetaL_GF,q)*vq);
 %% Theta and dTheta (angle between vertical line and thigh)
 % HK stands for Hip-Knee
 % Right Foot: 
-thetaR_HK = atan2((KneeR(1)-Hip(1)),(Hip(2)-KneeR(2)));
-dthetaR_HK = jacobian(thetaR_HK,q)*vq;
+thetaR_HK = simplify(atan2((KneeR(1)-Hip(1)),(Hip(2)-KneeR(2))));
+dthetaR_HK = simplify(jacobian(thetaR_HK,q)*vq);
 % Left Foot: 
-thetaL_HK = atan2((KneeL(1)-Hip(1)),(Hip(2)-KneeL(2)));
-dthetaL_HK = jacobian(thetaL_HK,q)*vq;
+thetaL_HK = simplify(atan2((KneeL(1)-Hip(1)),(Hip(2)-KneeL(2))));
+dthetaL_HK = simplify(jacobian(thetaL_HK,q)*vq);
 
 %% L and dL (Virtual spring length and its changing speed)
 % Right Foot: 
-LengthR = sum((CoGB-FootR).^2)^0.5;
-dLengthR = jacobian(LengthR,q)*vq;
+LengthR = simplify(sum((CoGB-FootR).^2)^0.5);
+dLengthR = simplify(jacobian(LengthR,q)*vq);
 % Left Foot: 
-LengthL = sum((CoGB-FootL).^2)^0.5;
-dLengthL = jacobian(LengthL,q)*vq;
+LengthL = simplify(sum((CoGB-FootL).^2)^0.5);
+dLengthL = simplify(jacobian(LengthL,q)*vq);
+
+%% velocity of foot
+% Right Foot: 
+dFootR = simplify(jacobian(FootR,q)*vq);
+% Left Foot: 
+dFootL = simplify(jacobian(FootL,q)*vq);
 
 %% Create functions
 if ~exist('Functions','dir')
@@ -149,4 +155,7 @@ matlabFunction(thetaR_HK,'file','Functions\ThetaR_HK','vars',{q,param});
 matlabFunction(dthetaR_HK,'file','Functions\dThetaR_HK','vars',{[q;vq],param});
 matlabFunction(thetaL_HK,'file','Functions\ThetaL_HK','vars',{q,param});
 matlabFunction(dthetaL_HK,'file','Functions\dThetaL_HK','vars',{[q;vq],param});
+
+matlabFunction(dFootR,'file','Functions\velFootR','vars',{[q;vq],param});
+matlabFunction(dFootL,'file','Functions\velFootL','vars',{[q;vq],param});
 

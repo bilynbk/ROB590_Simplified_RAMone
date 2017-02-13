@@ -142,7 +142,7 @@ elseif phase == 5 || phase == 6
     d_theta = dThetaR(x,sysParam);
 end
 % PD controller parameters
-kp = 10;   %50;  % 120 % 300
+kp = 10;   %50;  % 120 % 300   % Not tuned
 kd = 0.3;  %1.5; % 4.8 % 8
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired phi.
@@ -165,22 +165,31 @@ end
 
 %% Swing Foot: Knee joint
 % PD controller parameters
-kp = 100;    % 100
-kd = 0.9;   % 0.9
+if phase == 2 || phase==5
+    kp = 100;    % 100
+    kd = 0.9;   % 0.9
+else
+    kp = -100;    % 100  %Not tuned
+    kd = -0.9;   % 0.9
+end    
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired phi.
 if phase == 2 
     err = x(7) - param.beta_eq*4;
     derr =  x(7+n/2);   
 elseif phase == 3
-    err = x(7) - param.beta_eq*4;
-    derr =  x(7+n/2);   
+    posFoot = posFootL(x(1:n/2),sysParam);
+    velFoot = velFootL(x,sysParam);
+    err = posFoot(2) - 0.03;
+    derr = velFoot(2);   
 elseif phase == 5
     err = x(5) - param.beta_eq*4;
     derr =  x(5+n/2);   
 elseif phase == 6
-    err = x(5) - param.beta_eq*4;
-    derr =  x(5+n/2);      
+    posFoot = posFootR(x(1:n/2),sysParam);
+    velFoot = velFootR(x,sysParam);
+    err = posFoot(2) - 0.03;
+    derr = velFoot(2);   
 end
 tau_knee = -kp*err - kd*derr;
 if tau_knee > max_f

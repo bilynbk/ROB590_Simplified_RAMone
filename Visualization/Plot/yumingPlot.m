@@ -126,15 +126,15 @@ if plot_flag(21)||plot_flag(22)
             tau_temp = groundController(S(i,:)',DS(i),t_prev_stance(i),k_des(i),dx_des(i));
 
             M = MassMatrix(S(i,1:7)',sysParam);
-            if phase==2 || phase==3
+            if DS(i)==2 || DS(i)==3
                 J = JcontPointR(S(i,1:7)',sysParam);
                 dJ = dJcontPointR(S(i,:)',sysParam);
-            elseif phase==5 || phase==6
+            elseif DS(i)==5 || DS(i)==6
                 J = JcontPointL(S(i,1:7)',sysParam);
                 dJ = dJcontPointL(S(i,:)',sysParam);
             end
             fCG = FCorGrav(S(i,:)',sysParam);
-            lamda = -inv(J*(M\J'))*(J*(M\(fCG+tau_temp)) + dJ*S(i,6:10)');
+            lamda = -pinv(J*(M\J'))*(J*(M\(fCG+tau_temp)) + dJ*S(i,8:14)');
             F_c(i,:) = lamda';
         end
     end
