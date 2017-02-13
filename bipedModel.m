@@ -62,7 +62,6 @@ DS(1) = 1;  % right leg: flight compression thrust 1 2 3
 while T(end) < tFinal
     tspan = T(end):dt:tFinal;
     if(DS(end) == 1) || (DS(end) == 4)
-        disp('In flight');
         fltSimOpts = odeset('RelTol',relTol,'AbsTol',absTol,...
             'Events',@(t,x) flightEvent(t,x,DS(end)),'MaxStep',dt);    
         [Tp,Sp,TEp,SEp,Ie] = ode45(@(t,x) flightDyn(t,x,t_prev_stance,DS(end)),...
@@ -111,7 +110,6 @@ while T(end) < tFinal
             disp('Flight Phase: Invalid event code');
         end
     elseif (DS(end)~=1) && (DS(end)~=4)
-        disp('In Stance');
         gndSimOpts = odeset('RelTol',relTol,'AbsTol',absTol,...
             'Events',@(t,x) groundEvent(t,x,DS(end),t_prev_stance,k_des,dx_des),'MaxStep',dt);
         [Tp,Sp,TEp,SEp,Ie] = ode45(@(t,x) groundDyn(t,x,DS(end),...
@@ -153,7 +151,6 @@ while T(end) < tFinal
             E_des = m_tot*9.81*(param.H+Terrain(Sp(end,1)+Sp(end,8)*t_prev_stance/2,param.ter_i))...
                     + 0.5*m_tot*dx_des^2;
                     %+ pi/4*param.d*dL*(param.L_sp0-L_sp_low);
-            disp(E_des);
             
             k_des = param.k + 2*(E_des-E_low)/(param.L_sp0-L_sp_low)^2;
 %             if k_des < param.k
@@ -184,25 +181,25 @@ end
 %% Plot 
 
 % Ref: P = [S, L_R, dL_R, E, E_des, tau_R, F_c,  Theta_R, dTheta_R, FootPos_R, tau_L]
-%           10 11   12    13 14     15/16  17/18 19       20        21/22      23/24
-n_plot = 24;
-plot_flag_index = [3 8 15 16 17 18];
-% plot_flag_index = [3 8 15 16 ];   % look at phi and joint torque
-plot_flag_index = [3 8 ];     % look at phi
-% plot_flag_index = [13 14];    % look at energy
-% plot_flag_index = [15 16 19 20]; % tune PD controller for theta in flight
-% plot_flag_index = [5  10 15 16];    % tune PD controller for knee in flight
-% plot_flag_index = [11 12];    % look at spring length and speed
-% plot_flag_index = [6];        % x velocity
-% plot_flag_index = [1 6];      % x
-% plot_flag_index = [17 18];    % gound reaction force
-% plot_flag_index = [21 22];    % Foot position
+%           14 15   16    17 18     19/20  21/22 23       24        25/26      27/28
+n_plot = 28;
+plot_flag_index = [3 10 19 20 21 22];
+plot_flag_index = [3 10 19 20 ];   % look at phi and joint torque
+plot_flag_index = [3 10 ];     % look at phi
+% plot_flag_index = [17 18];    % look at energy
+% plot_flag_index = [19 20 23 24]; % tune PD controller for theta in flight
+% plot_flag_index = [5  12 19 20];    % tune PD controller for knee in flight
+% plot_flag_index = [15 17];    % look at spring length and speed
+% plot_flag_index = [8];        % x velocity
+% plot_flag_index = [1 8];      % x
+% plot_flag_index = [21 22];    % gound reaction force
+% plot_flag_index = [25 26];    % Foot position
 
 if F_PLOT
     yumingPlot;
 end
 
 %% Animation
-% if F_ANIMATE
-%     Animation(T,S,DS,T(end),F_SAVEVID);    
-% end
+if F_ANIMATE
+    Animation(T,S,DS,T(end),F_SAVEVID);    
+end

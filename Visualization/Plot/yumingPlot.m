@@ -1,6 +1,6 @@
 
 %% initialize settings
-%P = [S, L, dL, E, E_des, tau, F_c, Theta, dTheta]
+%P = [S, L_R, dL_R, E, E_des, tau_R, F_c,  Theta_R, dTheta_R, FootPos_R, tau_L]
 
 % generate flags indicating which plot should be shown.
 plot_flag = zeros(1,n_plot);
@@ -69,7 +69,7 @@ end
 % length of the virtual spring
 dL_R = zeros(n,1);
 L_R = zeros(n,1);
-if plot_flag(11) || plot_flag(12)
+if plot_flag(15) || plot_flag(16)
     for i = 1:n
         % length of the virtual spring
         L_R(i) = SpringLengthR(S(i,1:7)',sysParam);
@@ -79,7 +79,7 @@ end
 
 % total energy
 E = zeros(n,1);
-if plot_flag(13)
+if plot_flag(17)
     for i = 1:n
         % length of the virtual spring
         E(i) = energy(S(i,:)',sysParam);
@@ -88,7 +88,7 @@ end
 % desired energy
 %TODO: if it's uneven terrain, them this part should be modified.
 E_des = zeros(n,1);
-if plot_flag(14)
+if plot_flag(18)
     m_tot = sysParam(1)+2*sysParam(4)+2*sysParam(8);
     E_des_temp = m_tot*9.81*(param.H+Terrain(S(1,1)+S(1,8)*param.t_prev_stance/2,param.ter_i))...
                 + 0.5*m_tot*dx_des(1)^2;
@@ -104,7 +104,7 @@ end
 % right hip/knee torque
 tau_R = zeros(n,2);
 tau_L = zeros(n,2);
-if plot_flag(15)||plot_flag(16)
+if plot_flag(19)||plot_flag(20)||plot_flag(27)||plot_flag(28)
     for i = 1:n
         if DS(i) == 1 || DS(i) == 4
             tau_temp = flightController(S(i,:)',t_prev_stance(i),DS(i));
@@ -120,7 +120,7 @@ end
 
 % contact force
 F_c = zeros(n,2);   
-if plot_flag(17)||plot_flag(18)
+if plot_flag(21)||plot_flag(22)
     for i = 1:n
         if DS(i)~=1 && DS(i)~=4
             tau_temp = groundController(S(i,:)',DS(i),t_prev_stance(i),k_des(i),dx_des(i));
@@ -143,7 +143,7 @@ end
 % theta and d_theta
 theta = zeros(n,1);
 d_theta = zeros(n,1);   
-if plot_flag(19)||plot_flag(20)
+if plot_flag(23)||plot_flag(24)
     for i = 1:n
         theta(i) = ThetaR(S(i,1:7)',sysParam);
         d_theta(i) = dThetaR(S(i,:)',sysParam);
@@ -152,7 +152,7 @@ end
 
 % Foot position (used to check the impact mapping)
 FootPos_R = zeros(n,2);
-if plot_flag(21)
+if plot_flag(25)
     for i = 1:n
         FootPos_R(i,:) = posFootR(S(i,1:7)',sysParam)';
     end

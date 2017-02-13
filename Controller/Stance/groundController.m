@@ -44,10 +44,10 @@ if phase == 2 || phase == 5
     tau_balance = -1*(kp*err + kd*derr);
 elseif phase == 3 || phase == 6
     % I found the robot lean forward too much with tar_vel = 0.
-    tar_vel = 3*dx_des + 1;
+    tar_vel = 1.2*dx_des + 0.3;
                 % can change dx_des to x(6), so there is no delay.
-                % if dx_des = 1, then tar_vel should be 4
-                % if dx_des = 0, then tar_vel should be 1
+                % if dx_des = 1, then tar_vel should be 1.5
+                % if dx_des = 0, then tar_vel should be 0.3
     % Failed try:
     % tar_vel = -((x(8)+x(9))*param.J2+(x(8)+x(9)+x(10))*param.J3)/param.J1;
     
