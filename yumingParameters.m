@@ -24,8 +24,8 @@ param.lL3 = 0.2385;      %[m]          Distance from knee center to foot center
 % Environmental constants
 param.g = 9.81;          %[m/s^2]      Accelerations due to gravity
 sysParam = [param.m1 param.J1 param.lH ...
-                  param.m2 param.J2 param.l2 param.lL2 ...
-                  param.m3 param.J3 param.l3 param.lL3 param.g];
+            param.m2 param.J2 param.l2 param.lL2 ...
+            param.m3 param.J3 param.l3 param.lL3 param.g];
 param.sysParam = sysParam;
 
 %% Joint and actuator constraint parameters
@@ -65,10 +65,11 @@ param.theta2 = asin(sysParam(11)*sin(-param.beta_eq)/param.L_sp0_HF);
 
 %% controller parameters
 param.target_pos = 3;
-param.t_prev_stance = 0.2/(param.k/100);
-param.H = 0.6;            % desired height (effecting kp_rai and kp_pos!)
+param.t_prev_stance = 0.2/(param.k/5000); 
+param.H = 0.60;            % desired height (effecting kp_rai and kp_pos!)
 param.max_dx_des = 0.5;     % maximum of desired speed (not real speed)
-        % max_dx_des can go to 8 or higher, but then it also jumps higher.
+        % seems like 1.2 is the limit (with H=0.6m)
+        % max_dx_des can go higher, but then it also jumps higher.
 % param.dx_des = 0;         % desired speed (initialized to be 0)
 % param.E_low = 0;          % energy at lowest point (initialized to be 0)
 % param.E_des = 0;          % desired energy (initialized to be 0)
@@ -85,7 +86,7 @@ kd_pos = 2;
 kp_rai = 0.04;      % Raibert sytle controller
         % kp_rai depends on H (the height) and k (the stiffness).
         % For larger desired speed, you need higher kp_rai.
-        % But the larger kp_rai is, the more unstable when changing speed.
+        % But the larger the kp_rai is, the more unstable when changing speed.
         % When it's stable enough, you can try to increase max_dx_des.
 param.k_f = [kp_pos kd_pos kp_rai];  % f stands for flight
 

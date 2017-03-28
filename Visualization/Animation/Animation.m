@@ -1,6 +1,7 @@
 function Animation(T,X,S,tFinal,F_SAVEVID)
 
 % settings
+slowmotionMultiplier = 4;
 fignum = 1;         % figure number
 param = yumingParameters();
 sysParam = param.sysParam;
@@ -18,7 +19,7 @@ set(h,'Position',[0 0 1000 400]);
 % step through each time increment and plot results
 if F_SAVEVID
     vidObj = VideoWriter('Two_Leg_Hopper_with_Knee.avi');
-    vidObj.FrameRate = length(T)/(tFinal-0);
+    vidObj.FrameRate = length(T)/(tFinal-0)/slowmotionMultiplier;
     open(vidObj);
     F(length(T)).cdata = []; F(length(T)).colormap = []; % preallocate
 end
@@ -70,18 +71,18 @@ posKL = [0 0];
 CoGSL = [0 0]; % CoG of left shank
 posFL = [0 0];
 % size of the plot
-CoGBodySize = 120-((120-40)/(7-3))*((boarderR-boarderL)-3); 
-            % 120 when world width = 3m. 40 when world width = 7m. 
+CoGBodySize = 120-((120-65)/(7-3))*((boarderR-boarderL)-3); 
+            % 120 when world width = 3m. 65 when world width = 7m. 
 if CoGBodySize<=0.1
     CoGBodySize = 0.1;
 end
-CoGThighSize = 50-((50-15)/(7-3))*((boarderR-boarderL)-3);  
-            % 50 when world width = 3m. 15 when world width = 7m.  
+CoGThighSize = 50-((50-25)/(7-3))*((boarderR-boarderL)-3);  
+            % 50 when world width = 3m. 25 when world width = 7m.  
 if CoGThighSize<=0.1
     CoGThighSize = 0.1;
 end
-LinkWidth = 3-((3-1.5)/(7-3))*((boarderR-boarderL)-3);  
-            % 3 when world width = 3m. 1.5 when world width = 7m.
+LinkWidth = 3-((3-2)/(7-3))*((boarderR-boarderL)-3);  
+            % 3 when world width = 3m. 2 when world width = 7m.
 if LinkWidth<=0.1
     LinkWidth = 0.1;
 end

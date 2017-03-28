@@ -20,6 +20,11 @@ function dxdt = groundDyn(t,x,phase,t_prev_stance,k_des,dx_des)
         dJ = dJcontPointL(x,sysParam);
     end
     lamda = -(J*(M\J'))\(J*(M\(fCG+tau)) + dJ*x(n/2+1:n));
-    
+
     dxdt(n/2+1:n) = M\(fCG + J'*lamda + tau);
+%     if lamda(2)<0
+%         dxdt(n/2+1:n) = M\(fCG + J'*lamda);
+%     else
+%         dxdt(n/2+1:n) = M\(fCG + J'*lamda + tau);
+%     end
 end

@@ -3,7 +3,7 @@ function tau = flightController(x,t_prev_stance,phase)
 n = size(x,1);
 tau = zeros(n/2,1);
 
-%% parameters
+%% parameters 
 param = yumingParameters();
 sysParam = param.sysParam;
 

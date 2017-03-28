@@ -42,6 +42,7 @@ if phase == 2 || phase == 5
     err = x(3) - tar_angle;
     derr =  x(3+n/2);     
     tau_balance = -1*(kp*err + kd*derr);
+    %tau_balance = 0; % for testing
 elseif phase == 3 || phase == 6
     % The robot lean forward too much with tar_vel = 0.
     % can change dx_des to x(8), so there is no delay.
@@ -55,8 +56,9 @@ elseif phase == 3 || phase == 6
         % if dx_des = 0.5, then tar_vel should be 0
         % if dx_des = 0, then tar_vel should be 0
     % 3. When the knee of rear foot during flight points to pi/9:
-    tar_vel = 2*x(8) + (-1);
-        % if dx_des = 0.5, then tar_vel should be 0
+    tar_vel = 2.7/1.4*x(8) + (-1);
+        % if dx = 1.4, then tar_vel should be 1.7
+            % Originally: if dx_des = 0.5, then tar_vel should be 0
         % if dx_des = 0, then tar_vel should be -1
     % 4. When the knee of rear foot during flight points to pi/9~pi/6:
     %tar_vel = 0*x(8) + (0);
