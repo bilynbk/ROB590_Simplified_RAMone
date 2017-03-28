@@ -6,6 +6,9 @@ tau = zeros(n/2,1);
 %% parameters 
 param = yumingParameters();
 sysParam = param.sysParam;
+lH = param.lH;
+lL2 = param.lL2;
+lL3 = param.lL3;
 
 %% Get the desired touch-down angle
 % Position controller parameters
@@ -39,22 +42,84 @@ end
 % theta_tar = 0; % for debugging
 
 %% Front Foot: Hip joint (Use "theta and desired theta" instead of alpha and desired alpha)
-% Derive current theta (spring is between CoG and foot!)
-if phase == 1 
-    theta = ThetaR(x(1:n/2),sysParam);
-    d_theta = dThetaR(x,sysParam);
+% % Derive current theta (spring is between Body and foot!)
+% if phase == 1 
+%     theta = ThetaR_BF(x(1:n/2),sysParam);
+%     d_theta = dThetaR_BF(x,sysParam);
+% elseif phase == 4
+%     theta = ThetaL_BF(x(1:n/2),sysParam);
+%     d_theta = dThetaL_BF(x,sysParam);
+% end
+% % PD controller parameters
+% kp = 50;   %10;   %50;    % 120 % 300
+% kd = 3.5;  %0.7;  %3.5;    % 4.8 % 8
+% max_f = 1000;    % maximum torque that can be applied
+% % PD controller for desired phi.
+% err = theta - theta_tar;
+% derr =  d_theta;     
+%         %%% TODO: theta_target is dynamic, so I should modify derr.
+% tau_hip = -kp*err - kd*derr;
+% if tau_hip > max_f
+%     tau_hip = max_f;
+% elseif tau_hip < -max_f
+%     tau_hip = -max_f;
+% end
+% 
+% % Assignment
+% if phase == 1
+%     tau(4) = tau_hip;
+% elseif phase == 4
+%     tau(6) = tau_hip;
+% end
+
+%% Front Foot: Hip joint (Use alpha and desired alpha)
+% I want to use the hip angle derived from touch-down angle, and see how it performs.
+% (because in Simulink, torque control seems not possible. We can't apply negative torque)
+
+% Derive target alpha 
+if phase == 1
+    beta = -x(5);
+    beta = -param.beta_eq; % testing
 elseif phase == 4
-    theta = ThetaL(x(1:n/2),sysParam);
-    d_theta = dThetaL(x,sysParam);
+    beta = -x(7);
+    beta = -param.beta_eq; % testing
 end
+l = (lL2^2 + lL3^2 - 2*lL2*lL3*cos(pi-beta))^0.5;
+if x(3)==theta_tar
+    alpha_tar = asin(lL3/l*sin(pi-beta));
+else
+    if x(3)<theta_tar
+        delta = theta_tar-x(3);
+        phi1 = asin(lH/l*sin(delta));
+        phi2 = pi-delta-phi1;
+        phi3 = asin(lL3/l*sin(pi-beta));
+        alpha_tar = -phi2+phi3+pi;
+    elseif  x(3)>theta_tar
+        delta = x(3)-theta_tar;
+        phi1 = asin(lH/l*sin(delta));
+        phi2 = pi-delta-phi1;
+        phi3 = asin(lL3/l*sin(pi-beta));
+        alpha_tar = +phi2+phi3-pi;
+    end
+end
+
+% for tunning
+% alpha_tar = 1;
+
 % PD controller parameters
-kp = 50;   %10;   %50;    % 120 % 300
-kd = 3.5;  %0.7;  %3.5;    % 4.8 % 8
+% (Tuned)
+kp = 130;   %50;   %10;   %50;    % 120 % 300
+kd = 5;  %3.5;  %0.7;  %3.5;   % 4.8 % 8
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired phi.
-err = theta - theta_tar;
-derr =  d_theta;     
-        %%% TODO: theta_target is dynamic, so I should modify derr.
+if phase == 1
+    err = x(4) - alpha_tar;
+    derr =  x(11);     
+elseif phase == 4
+    err = x(6) - alpha_tar;
+    derr =  x(13);     
+end
+        
 tau_hip = -kp*err - kd*derr;
 if tau_hip > max_f
     tau_hip = max_f;
@@ -71,8 +136,9 @@ end
 
 %% Front Foot: Knee joint
 % PD controller parameters
-kp = 50;   % 100  
-kd = 0.65;  % 0.9
+% (Tuned)
+kp = 100;  %50;   % 100  
+kd = 1;  %0.65;  % 0.9
 max_f = 1000;    % maximum torque that can be applied
 % PD controller for desired phi.
 if phase == 1
@@ -98,13 +164,13 @@ end
 
 %% Rear Foot: Hip joint
 %%%%%%%% Way I: foot pointing to the ground %%%%%%%%%%%%%
-% Derive current theta (angle between virtical line and "CoG-foot"!)
+% Derive current theta (angle between virtical line and "Body-foot"!)
 % if phase == 1 
-%     theta = ThetaL(x(1:n/2),sysParam);
-%     d_theta = dThetaL(x,sysParam);
+%     theta = ThetaL_BF(x(1:n/2),sysParam);
+%     d_theta = dThetaL_BF(x,sysParam);
 % elseif phase == 4
-%     theta = ThetaR(x(1:n/2),sysParam);
-%     d_theta = dThetaR(x,sysParam);
+%     theta = ThetaR_BF(x(1:n/2),sysParam);
+%     d_theta = dThetaR_BF(x,sysParam);
 % end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% Way II: knee pointing to the ground %%%%%%%%%%%%
@@ -189,5 +255,12 @@ end
 % tau(4) = 0;
 % tau(6) = 0;
 % tau(7) = 0;
+
+% tau(1)=0;
+% tau(2)=0;
+% tau(3)=0;
+% % tau(4)=0;
+% tau(6)=0;
+% tau(7)=0;
 
 end

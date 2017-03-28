@@ -145,8 +145,8 @@ theta = zeros(n,1);
 d_theta = zeros(n,1);   
 if plot_flag(23)||plot_flag(24)
     for i = 1:n
-        theta(i) = ThetaR(S(i,1:7)',sysParam);
-        d_theta(i) = dThetaR(S(i,:)',sysParam);
+        theta(i) = ThetaR_BF(S(i,1:7)',sysParam);
+        d_theta(i) = dThetaR_BF(S(i,:)',sysParam);
     end
 end
 

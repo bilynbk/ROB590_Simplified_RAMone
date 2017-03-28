@@ -96,6 +96,16 @@ dthetaR_GF = simplify(jacobian(thetaR_GF,q)*vq);
 % Left Foot: 
 thetaL_GF = simplify(atan2((FootL(1)-CoG_tot(1)),(CoG_tot(2)-FootL(2))));
 dthetaL_GF = simplify(jacobian(thetaL_GF,q)*vq);
+
+% The spring here is placed between body and foot.
+% BF stands for Body-Foot
+% Right Foot: 
+thetaR_BF = simplify(atan2((FootR(1)-CoGB(1)),(CoGB(2)-FootR(2))));
+dthetaR_BF = simplify(jacobian(thetaR_BF,q)*vq);
+% Left Foot: 
+thetaL_BF = simplify(atan2((FootL(1)-CoGB(1)),(CoGB(2)-FootL(2))));
+dthetaL_BF = simplify(jacobian(thetaL_BF,q)*vq);
+
 %% Theta and dTheta (angle between vertical line and thigh)
 % HK stands for Hip-Knee
 % Right Foot: 
@@ -142,14 +152,19 @@ matlabFunction(CoGSL,'file','Functions\CoGShankL','vars',{q,param});
 matlabFunction(FootL,'file','Functions\posFootL','vars',{q,param});
 matlabFunction(E,'file','Functions\energy','vars',{[q;vq],param});
 matlabFunction(CoG_tot,'file','Functions\CoG_tot','vars',{q,param});
-matlabFunction(thetaR_GF,'file','Functions\ThetaR','vars',{q,param});
-matlabFunction(dthetaR_GF,'file','Functions\dThetaR','vars',{[q;vq],param});
+matlabFunction(thetaR_GF,'file','Functions\ThetaR_GF','vars',{q,param});
+matlabFunction(dthetaR_GF,'file','Functions\dThetaR_GF','vars',{[q;vq],param});
 matlabFunction(LengthR,'file','Functions\SpringLengthR','vars',{q,param});
 matlabFunction(dLengthR,'file','Functions\dSpringLengthR','vars',{[q;vq],param});
-matlabFunction(thetaL_GF,'file','Functions\ThetaL','vars',{q,param});
-matlabFunction(dthetaL_GF,'file','Functions\dThetaL','vars',{[q;vq],param});
+matlabFunction(thetaL_GF,'file','Functions\ThetaL_GF','vars',{q,param});
+matlabFunction(dthetaL_GF,'file','Functions\dThetaL_GF','vars',{[q;vq],param});
 matlabFunction(LengthL,'file','Functions\SpringLengthL','vars',{q,param});
 matlabFunction(dLengthL,'file','Functions\dSpringLengthL','vars',{[q;vq],param});
+
+matlabFunction(thetaR_BF,'file','Functions\ThetaR_BF','vars',{q,param});
+matlabFunction(dthetaR_BF,'file','Functions\dThetaR_BF','vars',{[q;vq],param});
+matlabFunction(thetaL_BF,'file','Functions\ThetaL_BF','vars',{q,param});
+matlabFunction(dthetaL_BF,'file','Functions\dThetaL_BF','vars',{[q;vq],param});
 
 matlabFunction(thetaR_HK,'file','Functions\ThetaR_HK','vars',{q,param});
 matlabFunction(dthetaR_HK,'file','Functions\dThetaR_HK','vars',{[q;vq],param});

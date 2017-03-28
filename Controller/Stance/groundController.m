@@ -11,10 +11,10 @@ sysParam = param.sysParam;
 F = zeros(3,1);
 
 if (phase == 2) || (phase == 3)
-    theta = ThetaR(x(1:n/2),sysParam);
+    theta = ThetaR_BF(x(1:n/2),sysParam);
     L_sp = SpringLengthR(x(1:n/2),sysParam);
 elseif (phase == 5) || (phase == 6)
-    theta = ThetaL(x(1:n/2),sysParam);
+    theta = ThetaL_BF(x(1:n/2),sysParam);
     L_sp = SpringLengthL(x(1:n/2),sysParam);
 end
 
@@ -135,11 +135,11 @@ end
 %% Swing Foot: Hip joint (Use "theta and desired theta" instead of alpha and desired alpha)
 % Derive current theta (angle between virtical line and "CoG-Foot"!)
 if phase == 2 || phase == 3 
-    theta = ThetaL(x(1:n/2),sysParam);
-    d_theta = dThetaL(x,sysParam);
+    theta = ThetaL_BF(x(1:n/2),sysParam);
+    d_theta = dThetaL_BF(x,sysParam);
 elseif phase == 5 || phase == 6
-    theta = ThetaR(x(1:n/2),sysParam);
-    d_theta = dThetaR(x,sysParam);
+    theta = ThetaR_BF(x(1:n/2),sysParam);
+    d_theta = dThetaR_BF(x,sysParam);
 end
 % PD controller parameters
 kp = 10;   %50;  % 120 % 300   % Not tuned

@@ -64,11 +64,11 @@ param.L_sp0_HF = (sysParam(7)^2+sysParam(11)^2 ...
 param.theta2 = asin(sysParam(11)*sin(-param.beta_eq)/param.L_sp0_HF);
 
 %% controller parameters
-param.target_pos = 3;
+param.target_pos = 10;
 param.t_prev_stance = 0.2/(param.k/5000); 
 param.H = 0.60;            % desired height (effecting kp_rai and kp_pos!)
 param.max_dx_des = 0.5;     % maximum of desired speed (not real speed)
-        % seems like 1.2 is the limit (with H=0.6m)
+        % seems like 1.2/1.3 is the limit (with H=0.6m)
         % max_dx_des can go higher, but then it also jumps higher.
 % param.dx_des = 0;         % desired speed (initialized to be 0)
 % param.E_low = 0;          % energy at lowest point (initialized to be 0)

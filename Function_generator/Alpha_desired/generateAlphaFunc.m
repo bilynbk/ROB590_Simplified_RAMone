@@ -1,6 +1,8 @@
 %% This code generates the function for the desired hip angle during flight phase
 clear; clc; 
 
+% The derivation is in the scrap paper of one leg hopper.
+
 %% Defination
 syms theta phi beta 
 input = [theta phi beta]; 

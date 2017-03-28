@@ -188,15 +188,17 @@ plot_flag_index = [3 10 19 20 ];   % look at phi and joint torque
 plot_flag_index = [3 10 ];     % look at phi
 plot_flag_index = [19 20 ];   % look at joint torque
 % plot_flag_index = [17 18];    % look at energy
-% plot_flag_index = [19 20 23 24]; % tune PD controller for theta in flight
-% plot_flag_index = [5  12 19 20];    % tune PD controller for knee in flight
+plot_flag_index = [19 20 23 24]; % tune PD controller for theta in flight
+% plot_flag_index = [4 11 19];    % tune PD controller for hip in flight
+plot_flag_index = [4  ];    % tune PD controller for hip in flight
+plot_flag_index = [5  12 19 20];    % tune PD controller for knee in flight
+% plot_flag_index = [5  12];
 % plot_flag_index = [15 16];    % look at spring length and speed
-% plot_flag_index = [8];        % x velocity
+plot_flag_index = [8];        % x velocity
 % plot_flag_index = [1 8];      % x
 % plot_flag_index = [21 22];    % gound reaction force
 % plot_flag_index = [25 26];    % Foot position
 % plot_flag_index = [2];        % y
-
 
 if F_PLOT
     yumingPlot;

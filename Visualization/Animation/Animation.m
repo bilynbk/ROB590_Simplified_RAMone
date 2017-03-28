@@ -1,7 +1,7 @@
 function Animation(T,X,S,tFinal,F_SAVEVID)
 
 % settings
-slowmotionMultiplier = 4;
+slowmotionMultiplier = 1;
 fignum = 1;         % figure number
 param = yumingParameters();
 sysParam = param.sysParam;
